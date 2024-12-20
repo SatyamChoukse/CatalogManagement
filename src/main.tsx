@@ -8,15 +8,18 @@ import {
   QueryClientProvider,
 } from '@tanstack/react-query'
 import { Toaster } from '@/components/ui/toaster.tsx'
-
+import { Provider } from 'react-redux'
+import { store } from '@/store/store.ts'
 // Create a client
 const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-      <Toaster />
-    </QueryClientProvider >
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <Toaster />
+      </QueryClientProvider >
+    </Provider>
   </StrictMode>,
 )

@@ -4,19 +4,21 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { Eye, EyeOff } from "lucide-react"; // Ensure you have lucide-react installed
-import { ILoginForm } from "@/interfaces/login";
+import { Eye, EyeOff } from "lucide-react";
+import { ILoginForm } from "@/interfaces/request/login";
 import { useMutation } from "@tanstack/react-query";
-import { login } from "@/http/AuthService";
+import { login } from "@/services/AuthService";
 import { useNavigate } from "react-router-dom";
-import conf from "@/conf/conf";
 import { useToast } from "@/hooks/use-toast";
+import { useAppDispatch } from "@/store/Hook/hooks";
+import { login as authLogin } from '../store/Slices/authSlice'
+import { decodeToken } from "@/services/Token-Decode";
 
 function LoginForm({
     className,
     ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-    const [showPassword, setShowPassword] = useState(false); // State for password visibility
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
     const toast = useToast();
 
@@ -26,28 +28,39 @@ function LoginForm({
         formState: { errors },
     } = useForm<ILoginForm>();
 
+    const dispatch = useAppDispatch()
+
     const mutation = useMutation({
         mutationFn: login,
         onSuccess: (data) => {
-            console.log(data);
-            if (data.data.data.token) {
-                localStorage.setItem(conf.token, data.data.data.token);
-                console.log(localStorage.getItem(conf.token));
-                navigate("/");
+            if (data.data.data) {
+                dispatch(authLogin({ token: data.data.data.token, userData: decodeToken(data.data.data.token) }))
                 toast.toast({
                     variant: "default",
                     title: "Login Successful",
                     description: "You have successfully logged in",
                 })
+                navigate("/");
             }
             else {
-
+                toast.toast({
+                    variant: "destructive",
+                    title: "Login Failed",
+                    description: data.data.errorMessage,
+                })
             }
+        },
+        onError: (error) => {
+            console.log(error)
+            toast.toast({
+                variant: "destructive",
+                title: "Login Failed",
+                description: error.message,
+            })
         },
     })
 
     const onSubmit: SubmitHandler<ILoginForm> = (data) => {
-        console.log(data);
         if (data) {
             mutation.mutate(data);
         }
