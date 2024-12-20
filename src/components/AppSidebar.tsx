@@ -1,5 +1,4 @@
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from './ui/sidebar'
-import NavMain from './NavMain'
 import NavUser from './NavUser'
 import { Blocks, GalleryVerticalEnd, LayoutDashboard,  Notebook, Package, ReceiptText, ShoppingBag, User, Users } from 'lucide-react'
 import NavProjects from './NavProjects'
@@ -108,12 +107,12 @@ const data = {
     projects: [
         {
             name: "Dashboard",
-            url: "#",
+            url: "/",
             icon: LayoutDashboard,
         },
         {
             name: "Category",
-            url: "#",
+            url: "category",
             icon: Blocks,
         },
         {
