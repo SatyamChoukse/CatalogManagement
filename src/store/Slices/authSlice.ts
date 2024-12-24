@@ -1,9 +1,11 @@
 import conf from '@/conf/conf';
 import { createSlice } from '@reduxjs/toolkit'
 
+const token = localStorage.getItem(conf.token) != null? localStorage.getItem(conf.token): null;
+
 const initialState = {
     status: false,
-    token: null,
+    token: token,
     userData: null
 }
 

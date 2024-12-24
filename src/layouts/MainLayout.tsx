@@ -2,9 +2,16 @@ import AppSidebar from "@/components/AppSidebar"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
-import { Outlet } from "react-router-dom"
+import { useSelector } from "react-redux"
+import { Outlet, Navigate } from "react-router-dom"
 
 function MainLayout() {
+    const token = useSelector((state: any) => state.auth.token);
+
+    if (!token) {
+        return <Navigate to="/login" replace />
+    }
+
     return (
         <SidebarProvider>
             <AppSidebar />
@@ -33,8 +40,9 @@ function MainLayout() {
                     <Outlet />
                 </div>
             </SidebarInset>
-        </SidebarProvider>
+        </SidebarProvider >
     )
+
 }
 
 export default MainLayout
